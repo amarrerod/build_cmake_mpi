@@ -18,6 +18,10 @@ inputs:
     description: "Includes coverage reporting. Default: False"
     required: false
 
+  numcpp:
+    description: "Includes NumCpp with Boost. Default: False"
+    required: false
+
 runs:
   using: "composite"
   steps:
@@ -60,7 +64,18 @@ runs:
           else
             echo "coverage=${{inputs.coverage}}" >> $GITHUB_ENV
           fi
+
+      - name: Set NumCpp with boost
+        shell: bash
+        run: |
+          if [ -z "${{inputs.numcpp}}" ]
+          then
+            echo "numcpp=False" >> $GITHUB_ENV
+          else
+            echo "numcpp=${{inputs.numcpp}}" >> $GITHUB_ENV
+          fi
       
+
       - name: "Setups actions"
         uses: actions/checkout@v2
       - name: "Setups GCC 10"
@@ -79,7 +94,7 @@ runs:
         run:  export CXX=MPI_CXX
       - name: Configures project
         shell: bash
-        run:  cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.variant}} -DINCLUDE_EXAMPLES=${{env.examples}} -DINCLUDE_TESTS=${{env.tests}} -DINCLUDE_COVERAGE=${{env.coverage}}
+        run:  cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.variant}} -DINCLUDE_EXAMPLES=${{env.examples}} -DINCLUDE_TESTS=${{env.tests}} -DINCLUDE_COVERAGE=${{env.coverage}} -DNUMCPP_NO_USE_BOOST=${{env.numcpp}}
       - name: Build
         shell: bash
         run:  cmake --build ${{github.workspace}}/build --config ${{env.variant}}  --target all -- -j 14
