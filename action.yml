@@ -19,7 +19,7 @@ inputs:
     required: false
 
   numcpp:
-    description: "Includes NumCpp with Boost. Default: False"
+    description: "Includes NumCpp with Boost. Default: True"
     required: false
 
 runs:
@@ -70,7 +70,7 @@ runs:
         run: |
           if [ -z "${{inputs.numcpp}}" ]
           then
-            echo "numcpp=False" >> $GITHUB_ENV
+            echo "numcpp=True" >> $GITHUB_ENV
           else
             echo "numcpp=${{inputs.numcpp}}" >> $GITHUB_ENV
           fi
